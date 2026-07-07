@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Documentation
+    url: https://github.com/marklabspl/ha-gsm-modem#readme
+    about: Installation, options, services, SMS commands and blueprints

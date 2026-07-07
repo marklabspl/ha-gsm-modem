@@ -1,0 +1,71 @@
+name: Bug report
+description: Report a problem with the GSM Modem integration
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. Mask phone numbers in logs and screenshots.
+  - type: input
+    id: version
+    attributes:
+      label: Integration version
+      placeholder: "1.5.0"
+    validations:
+      required: true
+  - type: input
+    id: ha_version
+    attributes:
+      label: Home Assistant version
+      placeholder: "2025.1.0"
+    validations:
+      required: true
+  - type: input
+    id: modem
+    attributes:
+      label: Modem model
+      placeholder: "ZTE MF192"
+    validations:
+      required: true
+  - type: dropdown
+    id: host
+    attributes:
+      label: Host setup
+      options:
+        - Home Assistant OS
+        - Supervised
+        - Container / Docker
+        - Core (venv)
+        - VM / Proxmox
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: What you did before the issue appeared
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant logs
+      description: Enable debug logging for `custom_components.gsm_modem` if possible
+      render: shell
+    validations:
+      required: false

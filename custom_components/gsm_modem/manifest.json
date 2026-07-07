@@ -2,13 +2,13 @@
   "domain": "gsm_modem",
   "name": "GSM Modem",
   "codeowners": [
-    "@marklabs"
+    "@marklabspl"
   ],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/marklabs/ha-gsm-modem",
+  "documentation": "https://github.com/marklabspl/ha-gsm-modem",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/marklabs/ha-gsm-modem/issues",
+  "issue_tracker": "https://github.com/marklabspl/ha-gsm-modem/issues",
   "requirements": [
     "pyserial==3.5"
   ],
