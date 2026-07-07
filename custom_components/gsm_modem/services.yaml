@@ -66,16 +66,16 @@ read_sms:
         device: {}
     box:
       name: Mailbox
-      description: SMS mailbox to read. Common values are ALL, REC UNREAD and REC READ.
+      description: SMS mailbox to read.
       required: false
-      default: ALL
+      default: all
       selector:
         select:
           translation_key: sms_box
           options:
-            - ALL
-            - REC UNREAD
-            - REC READ
+            - all
+            - rec_unread
+            - rec_read
 
 delete_sms:
   name: Delete SMS
@@ -237,14 +237,14 @@ delete_all_sms:
       name: Mailbox
       description: SMS mailbox to delete.
       required: false
-      default: ALL
+      default: all
       selector:
         select:
           translation_key: sms_box
           options:
-            - ALL
-            - REC UNREAD
-            - REC READ
+            - all
+            - rec_unread
+            - rec_read
 
 enter_pin:
   name: Enter SIM PIN

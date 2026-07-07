@@ -6,6 +6,8 @@ Send and receive SMS, run USSD codes, read modem state, handle SMS commands from
 
 [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=marklabspl&repository=ha-gsm-modem&category=integration)
 
+**Website:** [marklabs.pl](https://marklabs.pl)
+
 Use an old USB modem as a backup SMS channel when mobile data or push notifications are unavailable. Not a full replacement for push apps.
 
 > **Status:** experimental. Tested on **ZTE MF192**. Other modems may work with limits.
@@ -676,4 +678,5 @@ Include:
 - Diagnostics and logs (mask phone numbers)
 - Baudrate, timeouts, delete policy
 
-**Repository:** [github.com/marklabspl/ha-gsm-modem](https://github.com/marklabspl/ha-gsm-modem)
+**Repository:** [github.com/marklabspl/ha-gsm-modem](https://github.com/marklabspl/ha-gsm-modem)  
+**Website:** [marklabs.pl](https://marklabs.pl)

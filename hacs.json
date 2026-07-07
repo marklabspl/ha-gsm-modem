@@ -2,9 +2,7 @@
   "name": "GSM Modem",
   "content_in_root": false,
   "render_readme": true,
-  "domains": ["sensor", "binary_sensor", "button", "notify"],
   "homeassistant": "2025.1.0",
   "hacs": "2.0.0",
-  "iot_class": "local_polling",
   "country": "PL"
 }

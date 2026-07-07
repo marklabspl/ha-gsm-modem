@@ -12,7 +12,7 @@ if (-not (Get-Command gh -ErrorAction SilentlyContinue)) {
 
 gh repo edit marklabspl/ha-gsm-modem `
     --description "Home Assistant integration for USB GSM modems: SMS, USSD, SMS commands and automations." `
-    --homepage "https://github.com/marklabspl/ha-gsm-modem#readme" `
+    --homepage "https://marklabs.pl" `
     --add-topic homeassistant `
     --add-topic hacs `
     --add-topic gsm `

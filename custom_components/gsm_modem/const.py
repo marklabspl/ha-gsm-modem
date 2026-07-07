@@ -116,3 +116,24 @@ EVENT_USSD_RESPONSE = "gsm_modem_ussd_response"
 EVENT_SMS_COMMAND = "gsm_modem_sms_command"
 EVENT_SMS_CUSTOM_COMMAND_PREFIX = "gsm_modem_command_"
 EVENT_TEMPLATE_PREVIEW = "gsm_modem_template_preview"
+
+SMS_BOX_BY_SELECTOR: dict[str, str] = {
+    "all": "ALL",
+    "rec_unread": "REC UNREAD",
+    "rec_read": "REC READ",
+}
+DEFAULT_SMS_BOX_SELECTOR = "all"
+VALID_SMS_BOXES = frozenset(SMS_BOX_BY_SELECTOR.values())
+
+
+def normalize_sms_box(value: str | None) -> str:
+    """Map UI selector values to modem AT+CMGL mailbox names."""
+    if value is None or str(value).strip() == "":
+        return SMS_BOX_BY_SELECTOR[DEFAULT_SMS_BOX_SELECTOR]
+    key = str(value).strip()
+    if key in SMS_BOX_BY_SELECTOR:
+        return SMS_BOX_BY_SELECTOR[key]
+    upper = key.upper()
+    if upper in VALID_SMS_BOXES:
+        return upper
+    return SMS_BOX_BY_SELECTOR[DEFAULT_SMS_BOX_SELECTOR]

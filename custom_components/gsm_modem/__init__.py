@@ -60,6 +60,7 @@ from .const import (
     EVENT_WATCHDOG_RECONNECT,
     EVENT_TEST_SMS_SENT,
     EVENT_SMS_RECEIVED,
+    normalize_sms_box,
     SERVICE_CONFIG_ENTRY_ID,
     SERVICE_DELETE_SMS,
     SERVICE_DELETE_ALL_SMS,
@@ -573,7 +574,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
         async def async_read_sms(call: ServiceCall) -> None:
             runtime_obj = _resolve_runtime(hass, call)
             modem_client: GsmModemClient = runtime_obj["modem"]
-            box = call.data.get("box", "ALL")
+            box = normalize_sms_box(call.data.get("box"))
             messages = await _run_locked(runtime_obj, modem_client.list_sms, box)
             hass.bus.async_fire(EVENT_SMS_LIST, {"messages": [message.as_dict() for message in messages]})
 
@@ -620,7 +621,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
             runtime_obj = _resolve_runtime(hass, call)
             modem_client: GsmModemClient = runtime_obj["modem"]
             coordinator_obj: DataUpdateCoordinator = runtime_obj["coordinator"]
-            box = call.data.get("box", "ALL")
+            box = normalize_sms_box(call.data.get("box"))
             await _run_locked(runtime_obj, modem_client.delete_all_sms, box)
             await coordinator_obj.async_request_refresh()
 

@@ -76,3 +76,12 @@ def test_config_flow_errors_are_translated() -> None:
         data = _load(lang)
         assert data["config"]["error"]["invalid_phone_numbers"]
         assert data["options"]["error"]["invalid_phone_numbers"]
+
+
+def test_selector_option_keys_are_valid() -> None:
+    """Home Assistant requires selector option keys to match [a-z0-9-_]+."""
+    pattern = re.compile(r"^[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?$")
+    for lang in ("en", "pl"):
+        options = _load(lang)["selector"]["sms_box"]["options"]
+        for key in options:
+            assert pattern.match(key), f"{lang}: sms_box option {key!r}"

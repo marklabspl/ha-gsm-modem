@@ -216,9 +216,9 @@
     },
     "sms_box": {
       "options": {
-        "ALL": "Wszystkie wiadomości",
-        "REC UNREAD": "Nieprzeczytane",
-        "REC READ": "Przeczytane"
+        "all": "Wszystkie wiadomości",
+        "rec_unread": "Nieprzeczytane",
+        "rec_read": "Przeczytane"
       }
     }
   },

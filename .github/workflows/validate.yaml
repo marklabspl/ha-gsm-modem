@@ -15,8 +15,25 @@ jobs:
 
   hacs:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
+      - name: Ensure GitHub repository metadata for HACS
+        if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh repo edit "$GITHUB_REPOSITORY" \
+            --description "Home Assistant integration for USB GSM modems: SMS, USSD, SMS commands and automations." \
+            --homepage "https://marklabs.pl" \
+            --add-topic homeassistant \
+            --add-topic hacs \
+            --add-topic gsm \
+            --add-topic sms \
+            --add-topic usb-modem \
+            --add-topic home-automation \
+            --add-topic ussd
       - uses: hacs/action@main
         with:
           category: integration
