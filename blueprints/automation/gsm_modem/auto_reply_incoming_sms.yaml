@@ -1,0 +1,67 @@
+blueprint:
+  name: GSM Modem - Auto Reply to Incoming SMS
+  description: Send automatic SMS reply for incoming messages with optional filters.
+  domain: automation
+  input:
+    only_authorized:
+      name: Only reply to authorized senders
+      default: true
+      selector:
+        boolean:
+    message_contains:
+      name: Message must contain (optional)
+      description: Leave empty to reply to every matched SMS.
+      default: ""
+      selector:
+        text:
+    reply_template:
+      name: Reply message template
+      default: "Odebrano: {{ trigger.event.data.message }}"
+      selector:
+        text:
+          multiline: true
+    config_entry_id:
+      name: Optional modem config entry id
+      default: ""
+      selector:
+        text:
+
+mode: queued
+max: 20
+
+trigger:
+  - platform: event
+    event_type: gsm_modem_sms_received
+
+variables:
+  incoming_text: "{{ trigger.event.data.message | default('') }}"
+  incoming_sender: "{{ trigger.event.data.sender | default('') }}"
+  only_auth: !input only_authorized
+  contains_filter: !input message_contains
+  config_entry_id: !input config_entry_id
+
+condition:
+  - condition: template
+    value_template: >
+      {% if only_auth and not (trigger.event.data.authorized | default(false)) %}
+      false
+      {% elif contains_filter | trim != '' and (contains_filter | lower not in incoming_text | lower) %}
+      false
+      {% else %}
+      {{ incoming_sender | trim != '' }}
+      {% endif %}
+
+action:
+  - choose:
+      - conditions: "{{ config_entry_id | trim != '' }}"
+        sequence:
+          - action: gsm_modem.send_sms
+            data:
+              config_entry_id: !input config_entry_id
+              number: "{{ incoming_sender }}"
+              message: !input reply_template
+    default:
+      - action: gsm_modem.send_sms
+        data:
+          number: "{{ incoming_sender }}"
+          message: !input reply_template

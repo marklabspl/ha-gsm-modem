@@ -1,0 +1,613 @@
+{
+  "title": "GSM Modem",
+  "common": {
+    "unauthorized_sms_title": "SMS from unknown number",
+    "unauthorized_sms_message": "From: {sender}\n{text}",
+    "unknown_sender": "unknown",
+    "no_ussd_response": "No response received from the operator.",
+    "config": {
+      "purge_inbox_after_processing": "Clear entire inbox after processing",
+      "enable_sms_commands": "Enable SMS commands",
+      "reply_to_sms_commands": "Send SMS replies",
+      "notify_unauthorized_sms": "Notify about unknown SMS",
+      "delete_policy": "Delete received SMS",
+      "scan_interval": "How often to refresh",
+      "command_timeout": "Modem response timeout (s)",
+      "default_country_code": "Default country code",
+      "sms_timeout": "SMS send timeout (s)",
+      "allowed_numbers": "Trusted phone numbers",
+      "test_sms_number": "Test SMS number",
+      "test_sms_message": "Test SMS message",
+      "balance_ussd_code": "Balance check code",
+      "status_command": "Status command word",
+      "balance_command": "Balance command word",
+      "help_command": "Help command word",
+      "custom_commands": "Custom SMS commands",
+      "custom_command_reply_template": "Reply template for custom commands",
+      "custom_command_reply_templates": "Per-command reply templates",
+      "status_reply_template": "Reply template for STATUS",
+      "balance_reply_template": "Reply template for BALANCE",
+      "help_reply_template": "Reply template for HELP"
+    }
+  },
+  "exceptions": {
+    "no_modem_configured": {
+      "message": "No GSM modem is configured."
+    },
+    "modem_not_found": {
+      "message": "GSM modem {entry_id} was not found."
+    },
+    "multiple_modems": {
+      "message": "Multiple modems are configured. Specify config_entry_id or device_id."
+    },
+    "no_test_sms_number": {
+      "message": "No test SMS number is configured."
+    },
+    "invalid_phone_number": {
+      "message": "Invalid phone number. Use international format, for example +48501234567."
+    },
+    "sms_index_not_found": {
+      "message": "SMS message with index {index} was not found."
+    },
+    "modem_communication_error": {
+      "message": "Modem communication error: {detail}"
+    },
+    "notify_missing_number": {
+      "message": "Provide the recipient number in data.number."
+    },
+    "command_timeout": {
+      "message": "Timeout waiting for modem response: {detail}"
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "GSM Modem",
+        "description": "Connect your USB modem and choose the port where it responds. The port list is scanned automatically. SMS reply templates (5 fields) use Jinja2 — you can read Home Assistant entity states with states() and state_attr().",
+        "data": {
+          "port": "Modem port",
+          "baudrate": "Connection speed",
+          "scan_interval": "How often to refresh",
+          "command_timeout": "Modem response timeout (s)",
+          "default_country_code": "Default country code",
+          "sms_timeout": "SMS send timeout (s)",
+          "allowed_numbers": "Trusted phone numbers",
+          "delete_policy": "Delete received SMS",
+          "test_sms_number": "Test SMS number",
+          "test_sms_message": "Test SMS message",
+          "balance_ussd_code": "Balance check code",
+          "enable_sms_commands": "Enable SMS commands",
+          "reply_to_sms_commands": "Send SMS replies",
+          "notify_unauthorized_sms": "Notify about unknown SMS",
+          "purge_inbox_after_processing": "Clear entire inbox after processing",
+          "status_command": "Status command word",
+          "balance_command": "Balance command word",
+          "help_command": "Help command word",
+          "custom_commands": "Custom SMS commands",
+          "custom_command_reply_template": "Reply template for custom commands",
+          "custom_command_reply_templates": "Per-command reply templates",
+          "status_reply_template": "Reply template for STATUS",
+          "balance_reply_template": "Reply template for BALANCE",
+          "help_reply_template": "Reply template for HELP"
+        },
+        "data_description": {
+          "port": "Choose a port from the list. Only ports where the modem responds are shown.",
+          "baudrate": "Usually keep 115200. Change only if your modem documentation requires it.",
+          "scan_interval": "How often the integration checks the modem and new SMS messages.",
+          "command_timeout": "After this time the integration assumes the modem did not respond.",
+          "default_country_code": "Country code without +, for example 48 for Poland or 39 for Italy. Used to convert local 9-digit numbers to +48XXXXXXXXX format.",
+          "sms_timeout": "After this time the integration assumes the SMS send failed.",
+          "allowed_numbers": "Numbers in +48XXXXXXXXX format (one per line or comma-separated). Only these numbers can send SMS commands. Example: +48501234567",
+          "delete_policy": "Choose which received SMS messages are deleted automatically from the modem.",
+          "test_sms_number": "Test number in +48XXXXXXXXX format, for example +48501234567. Used by the Send test SMS button. If empty, the first trusted number is used.",
+          "test_sms_message": "Message sent by the test button.",
+          "balance_ussd_code": "Operator code for checking balance, for example *101#.",
+          "enable_sms_commands": "When enabled, messages from trusted numbers can trigger commands and automation events.",
+          "reply_to_sms_commands": "When enabled, the modem sends an SMS reply after a recognized command (STATUS, BALANCE, HELP, or custom).",
+          "notify_unauthorized_sms": "Show a Home Assistant notification when an SMS arrives from an unknown number.",
+          "purge_inbox_after_processing": "When enabled (recommended), modem inbox is regularly cleaned to prevent full SMS memory and receive lockups.",
+          "status_command": "Default: STATUS. The sender must text this exact word.",
+          "balance_command": "Default: BALANCE. The integration will check balance using the code below.",
+          "help_command": "Default: HELP. The modem replies with the available commands.",
+          "custom_commands": "Comma-separated commands, for example GARAGE, GATE, ALARM. Each command fires its own automation event.",
+          "custom_command_reply_template": "Default SMS text after a custom command (BRAMA, GATE, etc.) when no per-command line is set below. Jinja2 template: modem variables and Home Assistant states() are supported.",
+          "custom_command_reply_templates": "Optional: separate template per command. One line each: COMMAND | Jinja2 body. Example: BRAMA | Gate: open. Lines starting with # are comments.",
+          "status_reply_template": "Automatic SMS reply sent after the STATUS command. Jinja2 template. Modem variables: health, registration, operator, signal_percent, sim_state. You can add Home Assistant entities via states().",
+          "balance_reply_template": "SMS reply sent after the BALANCE command. Jinja2 template. Variables: ussd_code, ussd_response.",
+          "help_reply_template": "SMS reply sent after the HELP command. Jinja2 template. Variable commands contains the command list."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Could not connect to the modem on the selected port.",
+      "invalid_phone_numbers": "Use international phone format with + and country code, for example +48501234567. Local 9-digit numbers also work when the country code above is set."
+    },
+    "abort": {
+      "already_configured": "This modem has already been added."
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_phone_numbers": "Use international phone format with + and country code, for example +48501234567. Local 9-digit numbers also work when the country code above is set."
+    },
+    "step": {
+      "init": {
+        "title": "GSM Modem settings",
+        "description": "Change refresh, SMS commands and inbox behavior without editing YAML. There are 5 template fields: STATUS, BALANCE, HELP, default custom-command template, and optional per-command lines (COMMAND | template).",
+        "data": {
+          "scan_interval": "How often to refresh",
+          "command_timeout": "Modem response timeout (s)",
+          "default_country_code": "Default country code",
+          "sms_timeout": "SMS send timeout (s)",
+          "allowed_numbers": "Trusted phone numbers",
+          "delete_policy": "Delete received SMS",
+          "test_sms_number": "Test SMS number",
+          "test_sms_message": "Test SMS message",
+          "balance_ussd_code": "Balance check code",
+          "enable_sms_commands": "Enable SMS commands",
+          "reply_to_sms_commands": "Send SMS replies",
+          "notify_unauthorized_sms": "Notify about unknown SMS",
+          "purge_inbox_after_processing": "Clear entire inbox after processing",
+          "status_command": "Status command word",
+          "balance_command": "Balance command word",
+          "help_command": "Help command word",
+          "custom_commands": "Custom SMS commands",
+          "custom_command_reply_template": "Reply template for custom commands",
+          "custom_command_reply_templates": "Per-command reply templates",
+          "status_reply_template": "Reply template for STATUS",
+          "balance_reply_template": "Reply template for BALANCE",
+          "help_reply_template": "Reply template for HELP"
+        },
+        "data_description": {
+          "scan_interval": "How often the integration checks the modem and new SMS messages.",
+          "command_timeout": "After this time the integration assumes the modem did not respond.",
+          "default_country_code": "Country code without +, for example 48 for Poland or 39 for Italy. Used to convert local 9-digit numbers to +48XXXXXXXXX format.",
+          "sms_timeout": "After this time the integration assumes the SMS send failed.",
+          "allowed_numbers": "Numbers in +48XXXXXXXXX format (one per line or comma-separated). Example: +48501234567",
+          "delete_policy": "Choose which received SMS messages are deleted automatically from the modem.",
+          "test_sms_number": "Test number in +48XXXXXXXXX format, for example +48501234567. Used by the Send test SMS button.",
+          "test_sms_message": "Message sent by the test button.",
+          "balance_ussd_code": "Operator code for checking balance, for example *101#.",
+          "enable_sms_commands": "When enabled, messages from trusted numbers can trigger commands and automation events.",
+          "reply_to_sms_commands": "When enabled, the modem sends an SMS reply after a recognized command (STATUS, BALANCE, HELP, or custom).",
+          "notify_unauthorized_sms": "Show a notification when an SMS arrives from an unknown number.",
+          "purge_inbox_after_processing": "When enabled (recommended), modem inbox is regularly cleaned to prevent full SMS memory and receive lockups.",
+          "status_command": "Word sent by SMS to request modem status.",
+          "balance_command": "Word sent by SMS to check balance.",
+          "help_command": "Word sent by SMS to receive the command list.",
+          "custom_commands": "Comma-separated commands, for example GARAGE, ALARM. Each command fires its own automation event.",
+          "custom_command_reply_template": "Default SMS text after a custom command (BRAMA, GATE, etc.) when no per-command line is set below. Jinja2 template: modem variables and Home Assistant states() are supported.",
+          "custom_command_reply_templates": "Optional: separate template per command. One line each: COMMAND | Jinja2 body. Example: BRAMA | Gate: open. Lines starting with # are comments.",
+          "status_reply_template": "Automatic SMS reply sent after the STATUS command. Jinja2 template. Modem variables: health, registration, operator, signal_percent, sim_state. You can add Home Assistant entities via states().",
+          "balance_reply_template": "SMS reply sent after the BALANCE command. Jinja2 template. Variables: ussd_code, ussd_response.",
+          "help_reply_template": "SMS reply sent after the HELP command. Jinja2 template. Variable commands contains the command list."
+        }
+      }
+    }
+  },
+  "selector": {
+    "delete_policy": {
+      "options": {
+        "never": "Never delete",
+        "authorized": "Delete trusted senders only",
+        "unauthorized": "Delete unknown senders only",
+        "all": "Delete all"
+      }
+    },
+    "scan_interval": {
+      "options": {
+        "5": "Every 5 seconds",
+        "10": "Every 10 seconds",
+        "15": "Every 15 seconds",
+        "30": "Every 30 seconds",
+        "60": "Every minute",
+        "120": "Every 2 minutes",
+        "300": "Every 5 minutes"
+      }
+    },
+    "baudrate": {
+      "options": {
+        "9600": "9600",
+        "19200": "19200",
+        "38400": "38400",
+        "57600": "57600",
+        "115200": "115200 (recommended)"
+      }
+    },
+    "sms_box": {
+      "options": {
+        "ALL": "All messages",
+        "REC UNREAD": "Unread",
+        "REC READ": "Read"
+      }
+    }
+  },
+  "device": {
+    "modem": {
+      "name": "GSM Modem"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "signal": {
+        "name": "Signal strength"
+      },
+      "health": {
+        "name": "Modem health",
+        "state": {
+          "excellent": "Good signal",
+          "weak_signal": "Weak signal",
+          "problem": "Problem",
+          "sim_not_ready": "SIM not ready",
+          "not_registered": "Not registered"
+        }
+      },
+      "operator": {
+        "name": "Network operator"
+      },
+      "sim_state": {
+        "name": "SIM card",
+        "state": {
+          "READY": "Ready",
+          "SIM PIN": "PIN required",
+          "SIM PUK": "PUK required",
+          "NOT INSERTED": "Not inserted"
+        }
+      },
+      "registration": {
+        "name": "Network registration",
+        "state": {
+          "Registered - home network": "Home network",
+          "Registered - roaming": "Roaming",
+          "Not registered": "Not registered",
+          "Searching": "Searching",
+          "Registration denied": "Registration denied",
+          "Unknown": "Unknown"
+        }
+      },
+      "sms_unread": {
+        "name": "Unread messages"
+      },
+      "sms_inbox": {
+        "name": "Messages stored on modem"
+      },
+      "diagnostics": {
+        "name": "Connection test",
+        "state": {
+          "pass": "OK",
+          "unknown": "Unknown",
+          "fail": "Failed"
+        }
+      },
+      "reconnect_count": {
+        "name": "Reconnect count"
+      },
+      "last_error": {
+        "name": "Last error"
+      },
+      "signal_raw": {
+        "name": "Signal strength (raw value)"
+      },
+      "registration_raw": {
+        "name": "Registration (raw value)"
+      },
+      "last_sms_index": {
+        "name": "Message number on modem"
+      },
+      "last_sms_number": {
+        "name": "Last SMS sender"
+      },
+      "last_sms_text": {
+        "name": "Last SMS message"
+      },
+      "last_sms_authorized": {
+        "name": "Last SMS from trusted number",
+        "state": {
+          "true": "Yes",
+          "false": "No"
+        }
+      },
+      "last_sms_command": {
+        "name": "Last recognized command"
+      },
+      "last_command_handled": {
+        "name": "Command handled",
+        "state": {
+          "true": "Yes",
+          "false": "No"
+        }
+      },
+      "last_command_action": {
+        "name": "Handled command type",
+        "state": {
+          "status": "Modem status",
+          "balance": "Balance check",
+          "help": "Help",
+          "custom": "Custom command"
+        }
+      },
+      "last_command_reply_sent": {
+        "name": "Reply SMS sent",
+        "state": {
+          "true": "Yes",
+          "false": "No"
+        }
+      },
+      "last_command_reply_error": {
+        "name": "Reply send error"
+      },
+      "last_ussd_response": {
+        "name": "Last operator response"
+      },
+      "last_outgoing_number": {
+        "name": "Last outgoing number"
+      },
+      "last_outgoing_segments": {
+        "name": "Last SMS segments"
+      },
+      "sent_count": {
+        "name": "Sent SMS count"
+      },
+      "send_fail_count": {
+        "name": "Failed SMS count"
+      },
+      "imei": {
+        "name": "Modem IMEI"
+      },
+      "manufacturer": {
+        "name": "Modem manufacturer"
+      },
+      "model": {
+        "name": "Modem model"
+      }
+    },
+    "button": {
+      "send_test_sms": {
+        "name": "Send test SMS"
+      },
+      "check_balance": {
+        "name": "Check balance"
+      },
+      "clear_all_sms": {
+        "name": "Clear all SMS from modem"
+      },
+      "read_unread_sms": {
+        "name": "Fetch unread SMS"
+      },
+      "read_all_sms": {
+        "name": "Fetch all SMS"
+      },
+      "refresh_status": {
+        "name": "Refresh modem status"
+      },
+      "run_diagnostics": {
+        "name": "Run connection test"
+      },
+      "reconnect": {
+        "name": "Reconnect modem"
+      }
+    },
+    "notify": {
+      "sms": {
+        "name": "Send SMS"
+      }
+    },
+    "binary_sensor": {
+      "modem_problem": {
+        "name": "Modem problem"
+      },
+      "sim_ready": {
+        "name": "SIM ready"
+      },
+      "network_registered": {
+        "name": "Network registered"
+      }
+    }
+  },
+  "services": {
+    "send_sms": {
+      "name": "Send SMS",
+      "description": "Send an SMS message through the selected modem.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        },
+        "number": {
+          "name": "Recipient number",
+          "description": "For example +48123456789"
+        },
+        "message": {
+          "name": "Message text",
+          "description": "SMS body to send."
+        }
+      }
+    },
+    "send_test_sms": {
+      "name": "Send test SMS",
+      "description": "Send the configured test message to the configured test number.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        }
+      }
+    },
+    "read_sms": {
+      "name": "Read SMS from modem",
+      "description": "Read messages from the modem and fire an automation event.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        },
+        "box": {
+          "name": "Message type",
+          "description": "For example all, unread or read messages."
+        }
+      }
+    },
+    "delete_sms": {
+      "name": "Delete SMS",
+      "description": "Delete one message from the modem using its storage number.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        },
+        "index": {
+          "name": "Message number",
+          "description": "Message number shown in the SMS inbox attributes."
+        }
+      }
+    },
+    "reply_sms": {
+      "name": "Reply to SMS",
+      "description": "Send a reply to the sender of a message stored on the modem.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        },
+        "index": {
+          "name": "Message number",
+          "description": "Message number you want to reply to."
+        },
+        "message": {
+          "name": "Reply text",
+          "description": "SMS body to send."
+        }
+      }
+    },
+    "delete_all_sms": {
+      "name": "Delete all SMS",
+      "description": "Delete all messages of the selected type from the modem.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        },
+        "box": {
+          "name": "Message type",
+          "description": "For example all, unread or read messages."
+        }
+      }
+    },
+    "send_ussd": {
+      "name": "Send operator code",
+      "description": "Send a USSD code, for example to check balance.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        },
+        "code": {
+          "name": "Code",
+          "description": "For example *101#"
+        }
+      }
+    },
+    "check_balance": {
+      "name": "Check balance",
+      "description": "Send the configured balance check code.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        }
+      }
+    },
+    "run_diagnostics": {
+      "name": "Run connection test",
+      "description": "Check modem communication, SIM card, signal and SMS storage.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        }
+      }
+    },
+    "reconnect": {
+      "name": "Reconnect modem",
+      "description": "Close and reopen the connection to the modem.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        }
+      }
+    },
+    "preview_reply_templates": {
+      "name": "Preview reply templates",
+      "description": "Render STATUS, BALANCE, HELP and custom-command templates using current modem and Home Assistant state. Event: gsm_modem_template_preview (status_preview, balance_preview, help_preview, custom_preview).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        }
+      }
+    },
+    "enter_pin": {
+      "name": "Enter SIM PIN",
+      "description": "Send the SIM PIN to the modem after restart or SIM insertion.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Choose the modem when more than one is configured."
+        },
+        "device_id": {
+          "name": "Device",
+          "description": "Alternatively choose the modem device."
+        },
+        "pin": {
+          "name": "PIN code",
+          "description": "SIM card PIN."
+        }
+      }
+    }
+  }
+}

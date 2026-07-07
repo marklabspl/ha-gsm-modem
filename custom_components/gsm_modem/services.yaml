@@ -1,0 +1,289 @@
+send_sms:
+  name: Send SMS
+  description: Send an SMS message through the configured GSM modem.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+    number:
+      name: Phone number
+      description: Recipient phone number, for example +48700111222.
+      required: true
+      selector:
+        text:
+    message:
+      name: Message
+      description: SMS message body.
+      required: true
+      selector:
+        text:
+          multiline: true
+
+send_test_sms:
+  name: Send test SMS
+  description: Send the configured test message to the configured test number. If no test number is set, the first authorized number is used.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+
+read_sms:
+  name: Read SMS
+  description: Read SMS messages from the modem and publish them as a Home Assistant event.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+    box:
+      name: Mailbox
+      description: SMS mailbox to read. Common values are ALL, REC UNREAD and REC READ.
+      required: false
+      default: ALL
+      selector:
+        select:
+          translation_key: sms_box
+          options:
+            - ALL
+            - REC UNREAD
+            - REC READ
+
+delete_sms:
+  name: Delete SMS
+  description: Delete an SMS message from the modem by its storage index.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+    index:
+      name: SMS index
+      description: Message index reported by the modem.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 999
+          mode: box
+
+run_diagnostics:
+  name: Run diagnostics
+  description: Check AT communication, SIM state, signal, registration, operator, SMS text mode and SMS storage. The result is published as a Home Assistant event.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+
+reconnect:
+  name: Reconnect modem
+  description: Close and reopen the serial connection to the modem.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+
+send_ussd:
+  name: Send USSD
+  description: Send a USSD code through the configured modem. The result is published as a Home Assistant event.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+    code:
+      name: USSD code
+      description: USSD code, for example *101#.
+      required: true
+      selector:
+        text:
+
+check_balance:
+  name: Check balance
+  description: Send the configured balance USSD code. The result is published as a Home Assistant event.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+
+reply_sms:
+  name: Reply to SMS
+  description: Send a reply to the sender of an existing SMS message by storage index.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+    index:
+      name: SMS index
+      description: Message index reported by the modem.
+      required: true
+      selector:
+        number:
+          min: 0
+          max: 999
+          mode: box
+    message:
+      name: Message
+      description: Reply message body.
+      required: true
+      selector:
+        text:
+          multiline: true
+
+delete_all_sms:
+  name: Delete all SMS
+  description: Delete all SMS messages from the selected mailbox.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+    box:
+      name: Mailbox
+      description: SMS mailbox to delete.
+      required: false
+      default: ALL
+      selector:
+        select:
+          translation_key: sms_box
+          options:
+            - ALL
+            - REC UNREAD
+            - REC READ
+
+enter_pin:
+  name: Enter SIM PIN
+  description: Send the SIM PIN to the modem after startup or SIM insertion.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}
+    pin:
+      name: PIN
+      description: SIM PIN code.
+      required: true
+      selector:
+        text:
+
+preview_reply_templates:
+  name: Preview reply templates
+  description: Render STATUS, BALANCE, HELP and custom-command SMS templates using current modem and Home Assistant state, then publish gsm_modem_template_preview.
+  fields:
+    config_entry_id:
+      name: Config entry
+      description: Modem config entry id. Required when more than one GSM modem is configured.
+      required: false
+      selector:
+        config_entry:
+          integration: gsm_modem
+    device_id:
+      name: Device
+      description: GSM modem device id. Alternative to config_entry_id.
+      required: false
+      selector:
+        device: {}

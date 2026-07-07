@@ -1,0 +1,89 @@
+blueprint:
+  name: GSM Modem - Custom Command ACK
+  description: Run action for SMS command and send ACK/NACK to sender.
+  domain: automation
+  input:
+    command_event:
+      name: Command event
+      description: Usually gsm_modem_sms_command or specific gsm_modem_command_*.
+      default: gsm_modem_sms_command
+      selector:
+        text:
+    command_match:
+      name: Match command text (optional)
+      description: If set, only this command value is accepted (for example GATE).
+      default: ""
+      selector:
+        text:
+    action_to_run:
+      name: Action to execute
+      selector:
+        action: {}
+    success_reply:
+      name: Success SMS
+      default: "Wykonano komendę: {{ trigger.event.data.command }}"
+      selector:
+        text:
+          multiline: true
+    error_reply:
+      name: Error SMS
+      default: "Błąd wykonania komendy: {{ trigger.event.data.command }}"
+      selector:
+        text:
+          multiline: true
+    config_entry_id:
+      name: Optional modem config entry id
+      default: ""
+      selector:
+        text:
+
+mode: queued
+max: 10
+
+trigger:
+  - platform: event
+    event_type: !input command_event
+
+variables:
+  incoming_command: "{{ trigger.event.data.command | default('') }}"
+  sender: "{{ trigger.event.data.sender | default('') }}"
+  match_value: !input command_match
+  config_entry_id: !input config_entry_id
+
+condition:
+  - condition: template
+    value_template: >
+      {{ sender | trim != '' and (match_value | trim == '' or incoming_command | upper == match_value | upper) }}
+
+action:
+  - choose:
+      - conditions: "{{ trigger.event.data.handled | default(false) }}"
+        sequence:
+          - sequence: !input action_to_run
+          - choose:
+              - conditions: "{{ config_entry_id | trim != '' }}"
+                sequence:
+                  - action: gsm_modem.send_sms
+                    data:
+                      config_entry_id: !input config_entry_id
+                      number: "{{ sender }}"
+                      message: !input success_reply
+            default:
+              - action: gsm_modem.send_sms
+                data:
+                  number: "{{ sender }}"
+                  message: !input success_reply
+    default:
+      - choose:
+          - conditions: "{{ config_entry_id | trim != '' }}"
+            sequence:
+              - action: gsm_modem.send_sms
+                data:
+                  config_entry_id: !input config_entry_id
+                  number: "{{ sender }}"
+                  message: !input error_reply
+        default:
+          - action: gsm_modem.send_sms
+            data:
+              number: "{{ sender }}"
+              message: !input error_reply

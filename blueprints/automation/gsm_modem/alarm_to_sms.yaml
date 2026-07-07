@@ -1,0 +1,62 @@
+blueprint:
+  name: GSM Modem - Alarm State to SMS
+  description: Send SMS when selected alarm entity enters a target state.
+  domain: automation
+  input:
+    alarm_entity:
+      name: Alarm entity
+      selector:
+        entity:
+          domain: alarm_control_panel
+    target_state:
+      name: Alarm target state
+      default: triggered
+      selector:
+        select:
+          options:
+            - triggered
+            - armed_away
+            - armed_home
+            - disarmed
+    number:
+      name: Recipient number
+      description: Destination phone number, for example +48500100200.
+      selector:
+        text:
+    message:
+      name: SMS message
+      default: "Alarm {{ state_attr(alarm_entity, 'friendly_name') or alarm_entity }} changed to {{ trigger.to_state.state }}."
+      selector:
+        text:
+          multiline: true
+    config_entry_id:
+      name: Optional modem config entry id
+      default: ""
+      selector:
+        text:
+
+mode: queued
+
+trigger:
+  - platform: state
+    entity_id: !input alarm_entity
+    to: !input target_state
+
+variables:
+  alarm_entity: !input alarm_entity
+  config_entry_id: !input config_entry_id
+
+action:
+  - choose:
+      - conditions: "{{ config_entry_id | trim != '' }}"
+        sequence:
+          - action: gsm_modem.send_sms
+            data:
+              config_entry_id: !input config_entry_id
+              number: !input number
+              message: !input message
+    default:
+      - action: gsm_modem.send_sms
+        data:
+          number: !input number
+          message: !input message

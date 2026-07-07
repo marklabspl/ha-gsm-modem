@@ -1,0 +1,613 @@
+{
+  "title": "Modem GSM",
+  "common": {
+    "unauthorized_sms_title": "SMS od nieznanego numeru",
+    "unauthorized_sms_message": "Od: {sender}\n{text}",
+    "unknown_sender": "nieznany",
+    "no_ussd_response": "Brak odpowiedzi operatora z modemu.",
+    "config": {
+      "purge_inbox_after_processing": "Czyść całą skrzynkę po przetworzeniu",
+      "enable_sms_commands": "Włącz komendy SMS",
+      "reply_to_sms_commands": "Wysyłaj odpowiedzi SMS",
+      "notify_unauthorized_sms": "Powiadom o obcych SMS",
+      "delete_policy": "Usuwanie odebranych SMS",
+      "scan_interval": "Jak często odświeżać dane",
+      "command_timeout": "Czas oczekiwania na modem (s)",
+      "default_country_code": "Domyślny kod kraju",
+      "sms_timeout": "Czas wysyłania SMS (s)",
+      "allowed_numbers": "Zaufane numery telefonów",
+      "test_sms_number": "Numer do testowego SMS",
+      "test_sms_message": "Treść testowego SMS",
+      "balance_ussd_code": "Kod sprawdzania konta",
+      "status_command": "Słowo komendy: status",
+      "balance_command": "Słowo komendy: saldo",
+      "help_command": "Słowo komendy: pomoc",
+      "custom_commands": "Własne komendy SMS",
+      "custom_command_reply_template": "Szablon odpowiedzi na komendy własne",
+      "custom_command_reply_templates": "Szablony odpowiedzi per komenda",
+      "status_reply_template": "Szablon odpowiedzi na STATUS",
+      "balance_reply_template": "Szablon odpowiedzi na BALANCE",
+      "help_reply_template": "Szablon odpowiedzi na HELP"
+    }
+  },
+  "exceptions": {
+    "no_modem_configured": {
+      "message": "Nie skonfigurowano modemu GSM."
+    },
+    "modem_not_found": {
+      "message": "Nie znaleziono modemu GSM {entry_id}."
+    },
+    "multiple_modems": {
+      "message": "Skonfigurowano wiele modemów. Podaj config_entry_id lub device_id."
+    },
+    "no_test_sms_number": {
+      "message": "Nie ustawiono numeru do testowego SMS."
+    },
+    "invalid_phone_number": {
+      "message": "Nieprawidłowy numer telefonu. Użyj formatu międzynarodowego, np. +48501234567."
+    },
+    "sms_index_not_found": {
+      "message": "Nie znaleziono wiadomości SMS o numerze {index}."
+    },
+    "modem_communication_error": {
+      "message": "Błąd komunikacji z modemem: {detail}"
+    },
+    "notify_missing_number": {
+      "message": "Podaj numer odbiorcy w polu data.number."
+    },
+    "command_timeout": {
+      "message": "Przekroczono czas oczekiwania na odpowiedź modemu: {detail}"
+    }
+  },
+  "config": {
+    "step": {
+      "user": {
+        "title": "Modem GSM",
+        "description": "Podłącz modem USB i wybierz port, na którym modem odpowiada. Lista portów jest skanowana automatycznie. Szablony odpowiedzi SMS (5 pól) używają Jinja2 — możesz użyć states() i state_attr() dla czujników Home Assistant.",
+        "data": {
+          "port": "Port modemu",
+          "baudrate": "Prędkość transmisji",
+          "scan_interval": "Jak często odświeżać dane",
+          "command_timeout": "Czas oczekiwania na modem (s)",
+          "default_country_code": "Domyślny kod kraju",
+          "sms_timeout": "Czas wysyłania SMS (s)",
+          "allowed_numbers": "Zaufane numery telefonów",
+          "delete_policy": "Usuwanie odebranych SMS",
+          "test_sms_number": "Numer do testowego SMS",
+          "test_sms_message": "Treść testowego SMS",
+          "balance_ussd_code": "Kod sprawdzania konta",
+          "enable_sms_commands": "Włącz komendy SMS",
+          "reply_to_sms_commands": "Wysyłaj odpowiedzi SMS",
+          "notify_unauthorized_sms": "Powiadom o obcych SMS",
+          "purge_inbox_after_processing": "Czyść całą skrzynkę po przetworzeniu",
+          "status_command": "Słowo komendy: status",
+          "balance_command": "Słowo komendy: saldo",
+          "help_command": "Słowo komendy: pomoc",
+          "custom_commands": "Własne komendy SMS",
+          "custom_command_reply_template": "Szablon odpowiedzi na komendy własne",
+          "custom_command_reply_templates": "Szablony odpowiedzi per komenda",
+          "status_reply_template": "Szablon odpowiedzi na STATUS",
+          "balance_reply_template": "Szablon odpowiedzi na BALANCE",
+          "help_reply_template": "Szablon odpowiedzi na HELP"
+        },
+        "data_description": {
+          "port": "Wybierz port z listy. Integracja pokazuje tylko porty, na których modem odpowiada.",
+          "baudrate": "Zwykle zostaw 115200. Zmień tylko, jeśli tak podaje producent modemu.",
+          "scan_interval": "Jak często integracja ma sprawdzać modem i nowe SMS.",
+          "command_timeout": "Po tym czasie integracja uzna, że modem nie odpowiada na polecenie.",
+          "default_country_code": "Kod kraju bez znaku +, np. 48 dla Polski lub 39 dla Włoch. Używany do zamiany lokalnych numerów 9-cyfrowych na format +48XXXXXXXXX.",
+          "sms_timeout": "Po tym czasie integracja uzna, że wysyłka SMS się nie powiodła.",
+          "allowed_numbers": "Numery w formacie +48XXXXXXXXX (jeden w linii lub po przecinku). Tylko te numery mogą wysyłać komendy SMS. Przykład: +48501234567",
+          "delete_policy": "Określ, które odebrane SMS mają być automatycznie kasowane z modemu.",
+          "test_sms_number": "Numer testowy w formacie +48XXXXXXXXX, np. +48501234567. Używany przez przycisk „Wyślij testowy SMS”. Jeśli puste, użyty zostanie pierwszy zaufany numer.",
+          "test_sms_message": "Treść wysyłana przyciskiem testowym.",
+          "balance_ussd_code": "Kod operatora do sprawdzenia konta, np. *101#. Zależy od operatora.",
+          "enable_sms_commands": "Gdy włączone, wiadomości od zaufanych numerów mogą uruchamiać komendy i zdarzenia automatyzacji.",
+          "reply_to_sms_commands": "Gdy włączone, modem odsyła SMS po rozpoznaniu komendy (STATUS, BALANCE, HELP i własnych).",
+          "notify_unauthorized_sms": "Pokaż powiadomienie w Home Assistant, gdy przyjdzie SMS spoza listy zaufanych numerów.",
+          "purge_inbox_after_processing": "Gdy włączone (zalecane), integracja regularnie czyści skrzynkę modemu, aby nie dopuścić do zapełnienia pamięci SMS i blokady odbioru.",
+          "status_command": "Domyślnie: STATUS. Nadawca musi wysłać dokładnie to słowo.",
+          "balance_command": "Domyślnie: BALANCE. Po odebraniu integracja sprawdzi konto kodem poniżej.",
+          "help_command": "Domyślnie: HELP. Modem odpowie listą dostępnych komend.",
+          "custom_commands": "Komendy oddzielone przecinkami, np. BRAMA, ALARM. Każda komenda tworzy osobne zdarzenie automatyzacji.",
+          "custom_command_reply_template": "Domyślna treść SMS po komendzie własnej (BRAMA, GATE itd.), gdy brak osobnej linii w polu poniżej. To szablon Jinja2: możesz użyć zmiennych modemu i funkcji Home Assistant states().",
+          "custom_command_reply_templates": "Opcjonalnie: osobny szablon na każdą komendę. Format jednej linii: KOMENDA | treść Jinja2. Przykład: BRAMA | Brama: otwarta. Linie zaczynające się od # są komentarzami.",
+          "status_reply_template": "Treść automatycznej odpowiedzi SMS po komendzie STATUS. Szablon Jinja2. Zmienne modemu: health, registration, operator, signal_percent, sim_state. Możesz dodać encje Home Assistant przez states().",
+          "balance_reply_template": "Treść odpowiedzi SMS po komendzie BALANCE. Szablon Jinja2. Zmienne: ussd_code, ussd_response.",
+          "help_reply_template": "Treść odpowiedzi SMS po komendzie HELP. Szablon Jinja2. Zmienna commands zawiera listę komend."
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Nie udało się połączyć z modemem na wybranym porcie.",
+      "invalid_phone_numbers": "Podaj numery w formacie międzynarodowym ze znakiem + i kodem kraju, np. +48501234567. Lokalne 9 cyfr też zadziałają, jeśli ustawisz kod kraju powyżej."
+    },
+    "abort": {
+      "already_configured": "Ten modem jest już dodany."
+    }
+  },
+  "options": {
+    "error": {
+      "invalid_phone_numbers": "Podaj numery w formacie międzynarodowym ze znakiem + i kodem kraju, np. +48501234567. Lokalne 9 cyfr też zadziałają, jeśli ustawisz kod kraju powyżej."
+    },
+    "step": {
+      "init": {
+        "title": "Ustawienia modemu GSM",
+        "description": "Zmień odświeżanie, komendy SMS i zachowanie skrzynki bez edycji YAML. Są 5 pól szablonów: STATUS, BALANCE, HELP, domyślny dla komend własnych oraz opcjonalnie osobna linia per komenda (KOMENDA | szablon).",
+        "data": {
+          "scan_interval": "Jak często odświeżać dane",
+          "command_timeout": "Czas oczekiwania na modem (s)",
+          "default_country_code": "Domyślny kod kraju",
+          "sms_timeout": "Czas wysyłania SMS (s)",
+          "allowed_numbers": "Zaufane numery telefonów",
+          "delete_policy": "Usuwanie odebranych SMS",
+          "test_sms_number": "Numer do testowego SMS",
+          "test_sms_message": "Treść testowego SMS",
+          "balance_ussd_code": "Kod sprawdzania konta",
+          "enable_sms_commands": "Włącz komendy SMS",
+          "reply_to_sms_commands": "Wysyłaj odpowiedzi SMS",
+          "notify_unauthorized_sms": "Powiadom o obcych SMS",
+          "purge_inbox_after_processing": "Czyść całą skrzynkę po przetworzeniu",
+          "status_command": "Słowo komendy: status",
+          "balance_command": "Słowo komendy: saldo",
+          "help_command": "Słowo komendy: pomoc",
+          "custom_commands": "Własne komendy SMS",
+          "custom_command_reply_template": "Szablon odpowiedzi na komendy własne",
+          "custom_command_reply_templates": "Szablony odpowiedzi per komenda",
+          "status_reply_template": "Szablon odpowiedzi na STATUS",
+          "balance_reply_template": "Szablon odpowiedzi na BALANCE",
+          "help_reply_template": "Szablon odpowiedzi na HELP"
+        },
+        "data_description": {
+          "scan_interval": "Jak często integracja ma sprawdzać modem i nowe SMS.",
+          "command_timeout": "Po tym czasie integracja uzna, że modem nie odpowiada na polecenie.",
+          "default_country_code": "Kod kraju bez znaku +, np. 48 dla Polski lub 39 dla Włoch. Używany do zamiany lokalnych numerów 9-cyfrowych na format +48XXXXXXXXX.",
+          "sms_timeout": "Po tym czasie integracja uzna, że wysyłka SMS się nie powiodła.",
+          "allowed_numbers": "Numery w formacie +48XXXXXXXXX (jeden w linii lub po przecinku). Tylko te numery mogą wysyłać komendy SMS. Przykład: +48501234567",
+          "delete_policy": "Określ, które odebrane SMS mają być automatycznie kasowane z modemu.",
+          "test_sms_number": "Numer testowy w formacie +48XXXXXXXXX, np. +48501234567. Używany przez przycisk „Wyślij testowy SMS”.",
+          "test_sms_message": "Treść wysyłana przyciskiem testowym.",
+          "balance_ussd_code": "Kod operatora do sprawdzenia konta, np. *101#.",
+          "enable_sms_commands": "Gdy włączone, wiadomości od zaufanych numerów mogą uruchamiać komendy i zdarzenia automatyzacji.",
+          "reply_to_sms_commands": "Gdy włączone, modem odsyła SMS po rozpoznaniu komendy (STATUS, BALANCE, HELP i własnych).",
+          "notify_unauthorized_sms": "Pokaż powiadomienie, gdy przyjdzie SMS spoza listy zaufanych numerów.",
+          "purge_inbox_after_processing": "Gdy włączone (zalecane), integracja regularnie czyści skrzynkę modemu, aby nie dopuścić do zapełnienia pamięci SMS i blokady odbioru.",
+          "status_command": "Słowo wysyłane SMS-em, aby otrzymać status modemu.",
+          "balance_command": "Słowo wysyłane SMS-em, aby sprawdzić konto.",
+          "help_command": "Słowo wysyłane SMS-em, aby otrzymać listę komend.",
+          "custom_commands": "Komendy oddzielone przecinkami, np. BRAMA, ALARM. Każda komenda tworzy osobne zdarzenie automatyzacji.",
+          "custom_command_reply_template": "Domyślna treść SMS po komendzie własnej (BRAMA, GATE itd.), gdy brak osobnej linii w polu poniżej. To szablon Jinja2: możesz użyć zmiennych modemu i funkcji Home Assistant states().",
+          "custom_command_reply_templates": "Opcjonalnie: osobny szablon na każdą komendę. Format jednej linii: KOMENDA | treść Jinja2. Przykład: BRAMA | Brama: otwarta. Linie zaczynające się od # są komentarzami.",
+          "status_reply_template": "Treść automatycznej odpowiedzi SMS po komendzie STATUS. Szablon Jinja2. Zmienne modemu: health, registration, operator, signal_percent, sim_state. Możesz dodać encje Home Assistant przez states().",
+          "balance_reply_template": "Treść odpowiedzi SMS po komendzie BALANCE. Szablon Jinja2. Zmienne: ussd_code, ussd_response.",
+          "help_reply_template": "Treść odpowiedzi SMS po komendzie HELP. Szablon Jinja2. Zmienna commands zawiera listę komend."
+        }
+      }
+    }
+  },
+  "selector": {
+    "delete_policy": {
+      "options": {
+        "never": "Nigdy nie usuwaj",
+        "authorized": "Usuwaj tylko z zaufanych numerów",
+        "unauthorized": "Usuwaj tylko z nieznanych numerów",
+        "all": "Usuwaj wszystkie"
+      }
+    },
+    "scan_interval": {
+      "options": {
+        "5": "Co 5 sekund",
+        "10": "Co 10 sekund",
+        "15": "Co 15 sekund",
+        "30": "Co 30 sekund",
+        "60": "Co minutę",
+        "120": "Co 2 minuty",
+        "300": "Co 5 minut"
+      }
+    },
+    "baudrate": {
+      "options": {
+        "9600": "9600",
+        "19200": "19200",
+        "38400": "38400",
+        "57600": "57600",
+        "115200": "115200 (zalecane)"
+      }
+    },
+    "sms_box": {
+      "options": {
+        "ALL": "Wszystkie wiadomości",
+        "REC UNREAD": "Nieprzeczytane",
+        "REC READ": "Przeczytane"
+      }
+    }
+  },
+  "device": {
+    "modem": {
+      "name": "Modem GSM"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "signal": {
+        "name": "Siła sygnału"
+      },
+      "health": {
+        "name": "Stan modemu",
+        "state": {
+          "excellent": "Dobry sygnał",
+          "weak_signal": "Słaby sygnał",
+          "problem": "Wymaga uwagi",
+          "sim_not_ready": "Karta SIM niedostępna",
+          "not_registered": "Brak sieci"
+        }
+      },
+      "operator": {
+        "name": "Operator sieci"
+      },
+      "sim_state": {
+        "name": "Karta SIM",
+        "state": {
+          "READY": "Gotowa",
+          "SIM PIN": "Wymagany PIN",
+          "SIM PUK": "Wymagany PUK",
+          "NOT INSERTED": "Brak karty"
+        }
+      },
+      "registration": {
+        "name": "Połączenie z siecią",
+        "state": {
+          "Registered - home network": "Sieć domowa",
+          "Registered - roaming": "Roaming",
+          "Not registered": "Brak rejestracji",
+          "Searching": "Szuka sieci",
+          "Registration denied": "Odmowa rejestracji",
+          "Unknown": "Nieznany"
+        }
+      },
+      "sms_unread": {
+        "name": "Nieprzeczytane wiadomości"
+      },
+      "sms_inbox": {
+        "name": "Liczba wiadomości w modemie"
+      },
+      "diagnostics": {
+        "name": "Test połączenia",
+        "state": {
+          "pass": "OK",
+          "unknown": "Nieznany",
+          "fail": "Błąd"
+        }
+      },
+      "reconnect_count": {
+        "name": "Liczba ponownych połączeń"
+      },
+      "last_error": {
+        "name": "Ostatni błąd"
+      },
+      "signal_raw": {
+        "name": "Siła sygnału (surowa wartość)"
+      },
+      "registration_raw": {
+        "name": "Rejestracja (surowa wartość)"
+      },
+      "last_sms_index": {
+        "name": "Numer wiadomości w modemie"
+      },
+      "last_sms_number": {
+        "name": "Nadawca ostatniego SMS"
+      },
+      "last_sms_text": {
+        "name": "Treść ostatniego SMS"
+      },
+      "last_sms_authorized": {
+        "name": "Ostatni SMS od zaufanego numeru",
+        "state": {
+          "true": "Tak",
+          "false": "Nie"
+        }
+      },
+      "last_sms_command": {
+        "name": "Ostatnio rozpoznana komenda"
+      },
+      "last_command_handled": {
+        "name": "Czy komenda została obsłużona",
+        "state": {
+          "true": "Tak",
+          "false": "Nie"
+        }
+      },
+      "last_command_action": {
+        "name": "Rodzaj obsłużonej komendy",
+        "state": {
+          "status": "Status modemu",
+          "balance": "Sprawdzenie konta",
+          "help": "Pomoc",
+          "custom": "Komenda własna"
+        }
+      },
+      "last_command_reply_sent": {
+        "name": "Czy wysłano odpowiedź SMS",
+        "state": {
+          "true": "Tak",
+          "false": "Nie"
+        }
+      },
+      "last_command_reply_error": {
+        "name": "Błąd wysyłania odpowiedzi"
+      },
+      "last_ussd_response": {
+        "name": "Ostatnia odpowiedź operatora"
+      },
+      "last_outgoing_number": {
+        "name": "Ostatni numer docelowy"
+      },
+      "last_outgoing_segments": {
+        "name": "Liczba segmentów ostatniego SMS"
+      },
+      "sent_count": {
+        "name": "Liczba wysłanych SMS"
+      },
+      "send_fail_count": {
+        "name": "Liczba nieudanych wysyłek SMS"
+      },
+      "imei": {
+        "name": "Numer IMEI modemu"
+      },
+      "manufacturer": {
+        "name": "Producent modemu"
+      },
+      "model": {
+        "name": "Model modemu"
+      }
+    },
+    "button": {
+      "send_test_sms": {
+        "name": "Wyślij testowy SMS"
+      },
+      "check_balance": {
+        "name": "Sprawdź konto"
+      },
+      "clear_all_sms": {
+        "name": "Wyczyść wszystkie SMS z modemu"
+      },
+      "read_unread_sms": {
+        "name": "Pobierz nieprzeczytane SMS"
+      },
+      "read_all_sms": {
+        "name": "Pobierz wszystkie SMS"
+      },
+      "refresh_status": {
+        "name": "Odśwież stan modemu"
+      },
+      "run_diagnostics": {
+        "name": "Uruchom test połączenia"
+      },
+      "reconnect": {
+        "name": "Połącz modem ponownie"
+      }
+    },
+    "notify": {
+      "sms": {
+        "name": "Wyślij SMS"
+      }
+    },
+    "binary_sensor": {
+      "modem_problem": {
+        "name": "Problem z modemem"
+      },
+      "sim_ready": {
+        "name": "Karta SIM gotowa"
+      },
+      "network_registered": {
+        "name": "Zarejestrowany w sieci"
+      }
+    }
+  },
+  "services": {
+    "send_sms": {
+      "name": "Wyślij SMS",
+      "description": "Wyślij wiadomość SMS przez wybrany modem.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        },
+        "number": {
+          "name": "Numer odbiorcy",
+          "description": "Np. +48501234567"
+        },
+        "message": {
+          "name": "Treść wiadomości",
+          "description": "Tekst SMS do wysłania."
+        }
+      }
+    },
+    "send_test_sms": {
+      "name": "Wyślij testowy SMS",
+      "description": "Wyślij skonfigurowaną wiadomość testową na skonfigurowany numer.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        }
+      }
+    },
+    "read_sms": {
+      "name": "Odczytaj SMS z modemu",
+      "description": "Pobierz wiadomości z modemu i wyślij zdarzenie do automatyzacji.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        },
+        "box": {
+          "name": "Rodzaj wiadomości",
+          "description": "Np. wszystkie, nieprzeczytane lub przeczytane."
+        }
+      }
+    },
+    "delete_sms": {
+      "name": "Usuń SMS",
+      "description": "Usuń jedną wiadomość z modemu po jej numerze w pamięci modemu.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        },
+        "index": {
+          "name": "Numer wiadomości",
+          "description": "Numer wiadomości widoczny w atrybutach skrzynki SMS."
+        }
+      }
+    },
+    "reply_sms": {
+      "name": "Odpowiedz na SMS",
+      "description": "Wyślij odpowiedź do nadawcy wiadomości o podanym numerze w modemie.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        },
+        "index": {
+          "name": "Numer wiadomości",
+          "description": "Numer wiadomości, na którą chcesz odpowiedzieć."
+        },
+        "message": {
+          "name": "Treść odpowiedzi",
+          "description": "Tekst SMS do wysłania."
+        }
+      }
+    },
+    "delete_all_sms": {
+      "name": "Usuń wszystkie SMS",
+      "description": "Usuń wszystkie wiadomości wybranego typu z modemu.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        },
+        "box": {
+          "name": "Rodzaj wiadomości",
+          "description": "Np. wszystkie, nieprzeczytane lub przeczytane."
+        }
+      }
+    },
+    "send_ussd": {
+      "name": "Wyślij kod do operatora",
+      "description": "Wyślij kod specjalny (USSD), np. do sprawdzenia konta.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        },
+        "code": {
+          "name": "Kod",
+          "description": "Np. *101#"
+        }
+      }
+    },
+    "check_balance": {
+      "name": "Sprawdź konto",
+      "description": "Wyślij skonfigurowany kod sprawdzania konta.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        }
+      }
+    },
+    "run_diagnostics": {
+      "name": "Uruchom test połączenia",
+      "description": "Sprawdź komunikację z modemem, kartę SIM, sygnał i skrzynkę SMS.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        }
+      }
+    },
+    "reconnect": {
+      "name": "Połącz modem ponownie",
+      "description": "Zamknij i otwórz ponownie połączenie z modemem.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        }
+      }
+    },
+    "preview_reply_templates": {
+      "name": "Podgląd szablonów odpowiedzi",
+      "description": "Wyrenderuj szablony STATUS, BALANCE, HELP i komend własnych na podstawie bieżącego stanu modemu i Home Assistant. Zdarzenie: gsm_modem_template_preview (status_preview, balance_preview, help_preview, custom_preview).",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        }
+      }
+    },
+    "enter_pin": {
+      "name": "Wpisz PIN karty SIM",
+      "description": "Wyślij PIN do modemu po restarcie lub włożeniu karty SIM.",
+      "fields": {
+        "config_entry_id": {
+          "name": "Modem",
+          "description": "Wybierz modem, jeśli masz ich kilka."
+        },
+        "device_id": {
+          "name": "Urządzenie",
+          "description": "Alternatywnie wybierz urządzenie modemu."
+        },
+        "pin": {
+          "name": "Kod PIN",
+          "description": "PIN karty SIM."
+        }
+      }
+    }
+  }
+}

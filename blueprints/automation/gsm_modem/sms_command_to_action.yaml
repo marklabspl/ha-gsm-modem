@@ -1,0 +1,43 @@
+blueprint:
+  name: GSM Modem - SMS Command to Action
+  description: Run any action when a selected GSM command event is fired.
+  domain: automation
+  input:
+    command_event:
+      name: Command event
+      description: Event type to listen for, for example gsm_modem_command_brama.
+      default: gsm_modem_command_brama
+      selector:
+        text:
+    only_authorized:
+      name: Only authorized senders
+      description: Ignore events where sender is not authorized.
+      default: true
+      selector:
+        boolean:
+    action_to_run:
+      name: Action
+      description: Action executed after command is received.
+      selector:
+        action: {}
+
+mode: queued
+max: 10
+
+trigger:
+  - platform: event
+    event_type: !input command_event
+
+variables:
+  only_auth: !input only_authorized
+
+condition:
+  - condition: template
+    value_template: >
+      {% if only_auth %}
+      {{ trigger.event.data.authorized | default(false) }}
+      {% else %}
+      true
+      {% endif %}
+
+action: !input action_to_run
