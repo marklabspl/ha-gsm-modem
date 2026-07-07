@@ -44,7 +44,6 @@ def test_config_flow_option_keys_are_translated() -> None:
             assert data["config"]["step"]["user"]["data"][key]
             assert data["options"]["step"]["init"]["data_description"][key]
             assert data["config"]["step"]["user"]["data_description"][key]
-            assert data["common"]["config"][key]
 
 
 def test_config_only_fields_are_translated() -> None:
@@ -78,7 +77,14 @@ def test_config_flow_errors_are_translated() -> None:
         assert data["options"]["error"]["invalid_phone_numbers"]
 
 
-def test_selector_option_keys_are_valid() -> None:
+def test_common_section_contains_only_strings() -> None:
+    """Home Assistant requires common.* values to be strings, not nested objects."""
+    for lang in ("en", "pl"):
+        common = _load(lang)["common"]
+        for key, value in common.items():
+            assert isinstance(value, str), f"{lang}: common.{key}"
+
+
     """Home Assistant requires selector option keys to match [a-z0-9-_]+."""
     pattern = re.compile(r"^[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?$")
     for lang in ("en", "pl"):

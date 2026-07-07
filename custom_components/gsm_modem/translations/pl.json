@@ -4,31 +4,7 @@
     "unauthorized_sms_title": "SMS od nieznanego numeru",
     "unauthorized_sms_message": "Od: {sender}\n{text}",
     "unknown_sender": "nieznany",
-    "no_ussd_response": "Brak odpowiedzi operatora z modemu.",
-    "config": {
-      "purge_inbox_after_processing": "Czyść całą skrzynkę po przetworzeniu",
-      "enable_sms_commands": "Włącz komendy SMS",
-      "reply_to_sms_commands": "Wysyłaj odpowiedzi SMS",
-      "notify_unauthorized_sms": "Powiadom o obcych SMS",
-      "delete_policy": "Usuwanie odebranych SMS",
-      "scan_interval": "Jak często odświeżać dane",
-      "command_timeout": "Czas oczekiwania na modem (s)",
-      "default_country_code": "Domyślny kod kraju",
-      "sms_timeout": "Czas wysyłania SMS (s)",
-      "allowed_numbers": "Zaufane numery telefonów",
-      "test_sms_number": "Numer do testowego SMS",
-      "test_sms_message": "Treść testowego SMS",
-      "balance_ussd_code": "Kod sprawdzania konta",
-      "status_command": "Słowo komendy: status",
-      "balance_command": "Słowo komendy: saldo",
-      "help_command": "Słowo komendy: pomoc",
-      "custom_commands": "Własne komendy SMS",
-      "custom_command_reply_template": "Szablon odpowiedzi na komendy własne",
-      "custom_command_reply_templates": "Szablony odpowiedzi per komenda",
-      "status_reply_template": "Szablon odpowiedzi na STATUS",
-      "balance_reply_template": "Szablon odpowiedzi na BALANCE",
-      "help_reply_template": "Szablon odpowiedzi na HELP"
-    }
+    "no_ussd_response": "Brak odpowiedzi operatora z modemu."
   },
   "exceptions": {
     "no_modem_configured": {

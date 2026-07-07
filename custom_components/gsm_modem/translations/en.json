@@ -4,31 +4,7 @@
     "unauthorized_sms_title": "SMS from unknown number",
     "unauthorized_sms_message": "From: {sender}\n{text}",
     "unknown_sender": "unknown",
-    "no_ussd_response": "No response received from the operator.",
-    "config": {
-      "purge_inbox_after_processing": "Clear entire inbox after processing",
-      "enable_sms_commands": "Enable SMS commands",
-      "reply_to_sms_commands": "Send SMS replies",
-      "notify_unauthorized_sms": "Notify about unknown SMS",
-      "delete_policy": "Delete received SMS",
-      "scan_interval": "How often to refresh",
-      "command_timeout": "Modem response timeout (s)",
-      "default_country_code": "Default country code",
-      "sms_timeout": "SMS send timeout (s)",
-      "allowed_numbers": "Trusted phone numbers",
-      "test_sms_number": "Test SMS number",
-      "test_sms_message": "Test SMS message",
-      "balance_ussd_code": "Balance check code",
-      "status_command": "Status command word",
-      "balance_command": "Balance command word",
-      "help_command": "Help command word",
-      "custom_commands": "Custom SMS commands",
-      "custom_command_reply_template": "Reply template for custom commands",
-      "custom_command_reply_templates": "Per-command reply templates",
-      "status_reply_template": "Reply template for STATUS",
-      "balance_reply_template": "Reply template for BALANCE",
-      "help_reply_template": "Reply template for HELP"
-    }
+    "no_ussd_response": "No response received from the operator."
   },
   "exceptions": {
     "no_modem_configured": {
