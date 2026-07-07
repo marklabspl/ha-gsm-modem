@@ -17,8 +17,8 @@ gh repo edit marklabspl/ha-gsm-modem `
     --add-topic hacs `
     --add-topic gsm `
     --add-topic sms `
-    --add-topic usb-modem `
+    --add-topic ussd `
     --add-topic home-automation `
-    --add-topic ussd
+    --add-topic gsm-modem
 
 Write-Host "GitHub About section updated."
