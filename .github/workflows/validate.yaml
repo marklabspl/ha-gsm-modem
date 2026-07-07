@@ -19,12 +19,12 @@ jobs:
   hacs:
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      administration: write
+      contents: write
     steps:
       - uses: actions/checkout@v4
       - name: Ensure GitHub repository metadata for HACS
         if: github.event_name == 'push'
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
