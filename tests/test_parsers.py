@@ -10,6 +10,8 @@ from gsm_modem.parsers.basic import (
     parse_creg,
     parse_csq,
     parse_cusd,
+    registration_entity_state,
+    sim_state_entity_state,
 )
 
 
@@ -20,6 +22,17 @@ def test_first_payload_skips_ok_and_urc() -> None:
 
 def test_parse_cpin() -> None:
     assert parse_cpin(["+CPIN: READY", "OK"]) == "READY"
+
+
+def test_sim_state_entity_state() -> None:
+    assert sim_state_entity_state("READY") == "ready"
+    assert sim_state_entity_state("SIM PIN") == "sim_pin"
+    assert sim_state_entity_state("PH-SIM PIN") == "ph_sim_pin"
+
+
+def test_registration_entity_state() -> None:
+    assert registration_entity_state("Registered - home network") == "home"
+    assert registration_entity_state("Not registered") == "not_registered"
 
 
 def test_parse_cpms_storage_compact() -> None:

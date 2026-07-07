@@ -5,6 +5,43 @@ import re
 from ..modem.phone import normalize_phone
 from ..modem.models import SmsMessage
 
+_SIM_STATE_STATE_KEYS = {
+    "READY": "ready",
+    "SIM PIN": "sim_pin",
+    "SIM PUK": "sim_puk",
+    "NOT INSERTED": "not_inserted",
+}
+
+_REGISTRATION_STATE_KEYS = {
+    "Registered - home network": "home",
+    "Registered - roaming": "roaming",
+    "Not registered": "not_registered",
+    "Searching": "searching",
+    "Registration denied": "registration_denied",
+    "Unknown": "unknown",
+}
+
+
+def _slugify_state(value: str) -> str:
+    slug = re.sub(r"[^a-z0-9]+", "_", value.strip().lower())
+    return slug.strip("_") or "unknown"
+
+
+def sim_state_entity_state(raw: str | None) -> str | None:
+    """Map modem CPIN values to Home Assistant entity state keys."""
+    if raw is None:
+        return None
+    key = raw.strip()
+    return _SIM_STATE_STATE_KEYS.get(key, _slugify_state(key))
+
+
+def registration_entity_state(raw: str | None) -> str | None:
+    """Map modem registration labels to Home Assistant entity state keys."""
+    if raw is None:
+        return None
+    key = raw.strip()
+    return _REGISTRATION_STATE_KEYS.get(key, _slugify_state(key))
+
 
 def first_payload(lines: list[str]) -> str | None:
     for line in lines:

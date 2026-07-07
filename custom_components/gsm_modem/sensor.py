@@ -11,6 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
+from .parsers.basic import registration_entity_state, sim_state_entity_state
 
 
 @dataclass(frozen=True)
@@ -47,8 +48,8 @@ SENSORS = [
     SensorDescription("signal", lambda s: s.signal_percent, PERCENTAGE, SensorDeviceClass.SIGNAL_STRENGTH),
     SensorDescription("health", lambda s: s.health),
     SensorDescription("operator", lambda s: s.operator),
-    SensorDescription("sim_state", lambda s: s.sim_state),
-    SensorDescription("registration", lambda s: s.registration),
+    SensorDescription("sim_state", lambda s: sim_state_entity_state(s.sim_state)),
+    SensorDescription("registration", lambda s: registration_entity_state(s.registration)),
     SensorDescription("sms_unread", lambda s: s.sms_unread),
     SensorDescription("sms_inbox", lambda s: s.inbox_count, attr_fn=_inbox_attrs),
     SensorDescription("diagnostics", _diagnostics_state, attr_fn=_diagnostics_attrs),

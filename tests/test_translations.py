@@ -85,3 +85,14 @@ def test_selector_option_keys_are_valid() -> None:
         options = _load(lang)["selector"]["sms_box"]["options"]
         for key in options:
             assert pattern.match(key), f"{lang}: sms_box option {key!r}"
+
+
+def test_entity_state_keys_are_valid() -> None:
+    """Home Assistant requires entity state keys to match [a-z0-9-_]+."""
+    pattern = re.compile(r"^[a-z0-9](?:[a-z0-9_-]*[a-z0-9])?$")
+    for lang in ("en", "pl"):
+        sensors = _load(lang)["entity"]["sensor"]
+        for sensor_key, sensor_data in sensors.items():
+            states = sensor_data.get("state", {})
+            for key in states:
+                assert pattern.match(key), f"{lang}: sensor.{sensor_key}.state.{key!r}"

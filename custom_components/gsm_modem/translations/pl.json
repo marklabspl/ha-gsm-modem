@@ -248,21 +248,21 @@
       "sim_state": {
         "name": "Karta SIM",
         "state": {
-          "READY": "Gotowa",
-          "SIM PIN": "Wymagany PIN",
-          "SIM PUK": "Wymagany PUK",
-          "NOT INSERTED": "Brak karty"
+          "ready": "Gotowa",
+          "sim_pin": "Wymagany PIN",
+          "sim_puk": "Wymagany PUK",
+          "not_inserted": "Brak karty"
         }
       },
       "registration": {
         "name": "Połączenie z siecią",
         "state": {
-          "Registered - home network": "Sieć domowa",
-          "Registered - roaming": "Roaming",
-          "Not registered": "Brak rejestracji",
-          "Searching": "Szuka sieci",
-          "Registration denied": "Odmowa rejestracji",
-          "Unknown": "Nieznany"
+          "home": "Sieć domowa",
+          "roaming": "Roaming",
+          "not_registered": "Brak rejestracji",
+          "searching": "Szuka sieci",
+          "registration_denied": "Odmowa rejestracji",
+          "unknown": "Nieznany"
         }
       },
       "sms_unread": {

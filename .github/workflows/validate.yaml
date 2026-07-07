@@ -21,6 +21,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Ensure GitHub repository metadata for HACS
         if: github.event_name == 'push' || github.event.pull_request.head.repo.full_name == github.repository
+        continue-on-error: true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -33,7 +34,7 @@ jobs:
             --add-topic sms \
             --add-topic usb-modem \
             --add-topic home-automation \
-            --add-topic ussd
+            --add-topic ussd || true
       - uses: hacs/action@main
         with:
           category: integration
